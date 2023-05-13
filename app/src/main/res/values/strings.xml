@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BeeFun</string>
+    <string name="Home">Home</string>
+    <string name="Login">Login</string>
+    <string name="Account">Account</string>
+    <string name="Password">Password</string>
+    <string name="sign_up_now">Sign up now</string>
+    <string name="forget_password">forget the password?</string>
+    <string name="agree">Agree</string>
+    <string name="user_agreement">User Agreement</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="welcome_message">welcome to %1$s</string>
+</resources>

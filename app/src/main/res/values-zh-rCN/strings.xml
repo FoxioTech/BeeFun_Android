@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">蜂玩助手</string>
+    <string name="Home">主页</string>
+    <string name="Login">登录</string>
+    <string name="Account">账号</string>
+    <string name="Password">密码</string>
+    <string name="sign_up_now">立即注册</string>
+    <string name="forget_password">忘记密码?</string>
+    <string name="agree">同意</string>
+    <string name="user_agreement">用户协议</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="welcome_message">欢迎来到 %1$s</string>
+</resources>
