@@ -450,7 +450,7 @@ private fun ServerInfo() {
                             style = MaterialTheme.typography.bodyLarge,
                         )
                         Text(
-                            text = "105.45 MiB",
+                            text = "105.46 MiB",
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     }
