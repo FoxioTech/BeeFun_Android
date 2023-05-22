@@ -17,13 +17,21 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DataObject
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LastPage
+import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -39,7 +47,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shader
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,6 +60,12 @@ import androidx.navigation.compose.rememberNavController
 import tech.foxio.beefun.R
 import tech.foxio.beefun.ui.components.HeadAppTopBar
 import tech.foxio.beefun.ui.screens.home.viewmodel.HomeViewModel
+
+data class OverviewItem(
+    val Icon: ImageVector,
+    val Title: String,
+    val Route: String,
+)
 
 @ExperimentalMaterial3Api
 @Composable
@@ -69,13 +86,110 @@ fun HomeScreen(
                     .padding(it)
                     .padding(horizontal = 18.dp),
             ) {
-                items(20) {
+                items(3) {
                     ServerItem()
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+                item {
+                    ActivityLogListUI()
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+                items(3) {
+                    ActivityItem()
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
     )
+}
+
+@Composable
+private fun ActivityItem() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+    ) {
+        ListItem(
+            tonalElevation = 1.dp,
+            headlineContent = {
+                Text(
+                    text = "Minecraft",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            },
+            supportingContent = {
+                Text(
+                    text = "8:00 AM",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            trailingContent = {
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier
+                        .size(30.dp)
+                        .padding(end = 5.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.MoreHoriz,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.secondary,
+                    )
+                }
+            },
+            leadingContent = {
+                Image(
+                    painter = painterResource(id = R.drawable.minecraft),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(60.dp)
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun ActivityLogListUI() {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Activity Log",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(0.8f)
+            )
+            Surface(
+                tonalElevation = 3.dp,
+                shape = MaterialTheme.shapes.large,
+                onClick = { },
+                content = {
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 5.dp)
+                            .height(30.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = "View All",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Icon(
+                            imageVector = Icons.Default.NavigateNext,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,6 +204,13 @@ fun HomeScreenPreview() {
 @ExperimentalMaterial3Api
 fun PreviewServerItem() {
     ServerItem()
+}
+
+@Preview
+@Composable
+@ExperimentalMaterial3Api
+fun PreviewActivityItem() {
+    ActivityItem()
 }
 
 @Composable
@@ -110,16 +231,57 @@ fun ServerItem() {
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
     ) {
-        Surface(
+        ListItem(
             modifier = Modifier,
-            tonalElevation = 3.dp
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(18.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            tonalElevation = 3.dp,
+            headlineContent = {
+                Text(
+                    maxLines = 1,
+                    text = "Minecraft",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            },
+            supportingContent = {
+                Text(
+                    text = "8:00 AM",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
+            trailingContent = {
+                Row(
+                    modifier = Modifier
+                        .weight(0.4f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    IconButton(
+                        onClick = { openServerInfoSheet = !openServerInfoSheet },
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(end = 5.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                    Button(
+                        modifier = Modifier,
+                        onClick = {
+                            openServerOverviewSheet = !openServerOverviewSheet
+                        }
+                    ) {
+                        Text(
+                            text = "Manage",
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1
+                        )
+                    }
+                }
+            },
+            leadingContent = {
                 Row(
                     modifier = Modifier
                         .weight(0.2f),
@@ -142,53 +304,8 @@ fun ServerItem() {
                             .size(60.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(5.dp))
-                Column(
-                    modifier = Modifier
-                        .weight(0.4f),
-                ) {
-                    Text(
-                        maxLines = 1,
-                        text = "Minecraft",
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                    Text(
-                        text = "8:00 AM",
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .weight(0.4f),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    IconButton(
-                        onClick = { openServerInfoSheet = !openServerInfoSheet },
-                        modifier = Modifier
-                            .size(30.dp)
-                            .padding(end = 5.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            contentDescription = null,
-                        )
-                    }
-                    Button(
-                        modifier = Modifier,
-                        onClick = {
-                            openServerOverviewSheet = !openServerOverviewSheet
-                        }
-                    ) {
-                        Text(
-                            text = "Manage",
-                            style = MaterialTheme.typography.bodySmall,
-                            maxLines = 1
-                        )
-                    }
-                }
             }
-        }
+        )
     }
     if (openServerInfoSheet) {
         ModalBottomSheet(
@@ -198,18 +315,29 @@ fun ServerItem() {
             ServerInfo()
         }
     }
+    val overviewIconsList = listOf<OverviewItem>(
+        OverviewItem(Icons.Filled.Code, "Console", "console"),
+        OverviewItem(Icons.Filled.Description, "Files", "data"),
+        OverviewItem(Icons.Filled.Event, "Database", "plugins"),
+        OverviewItem(Icons.Filled.Info, "Schedules", "about"),
+        OverviewItem(Icons.Filled.Code, "BuckUps", "console"),
+        OverviewItem(Icons.Filled.DataObject, "Network", "data"),
+        OverviewItem(Icons.Filled.LastPage, "StartUp", "plugins"),
+        OverviewItem(Icons.Filled.Info, "Settings", "about"),
+        OverviewItem(Icons.Filled.Info, "Activity", "about"),
+    )
     if (openServerOverviewSheet) {
         ModalBottomSheet(
             onDismissRequest = { openServerOverviewSheet = false },
             sheetState = serverOverviewSheetState,
         ) {
-            ServerOverview()
+            ServerOverview(overviewIconsList = overviewIconsList)
         }
     }
 }
 
 @Composable
-fun ServerOverview() {
+fun ServerOverview(overviewIconsList: List<OverviewItem>) {
     Column(
         modifier = Modifier
             .padding(horizontal = 18.dp)
@@ -223,43 +351,104 @@ fun ServerOverview() {
             verticalArrangement = Arrangement.Center,
             horizontalArrangement = Arrangement.Center,
         ) {
-            items(8) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Card(
-                        modifier = Modifier,
-                        shape = MaterialTheme.shapes.extraLarge,
-                    ) {
-                        Surface(
-                            modifier = Modifier
-                                .padding(20.dp),
-                            shape = MaterialTheme.shapes.large,
-                            color = Color.Transparent
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.DataObject,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(30.dp),
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "Console",
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
+            items(overviewIconsList.size) {
+                ServerOverviewItem(
+                    overviewIconsList[it].Icon,
+                    overviewIconsList[it].Title,
+                    overviewIconsList[it].Route
+                )
             }
         }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(
+                modifier = Modifier,
+                onClick = {
+
+                }
+            ) {
+                Text(
+                    text = "Start",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                )
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Button(
+                modifier = Modifier,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                ),
+                onClick = {
+
+                }
+            ) {
+                Text(
+                    text = "Reboot",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                )
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Button(
+                modifier = Modifier,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                ),
+                onClick = {
+
+                }
+            ) {
+                Text(
+                    text = "Stop",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+    }
+}
+
+@Composable
+private fun ServerOverviewItem(Icon: ImageVector, Title: String, Route: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Spacer(modifier = Modifier.height(10.dp))
+        Card(
+            modifier = Modifier
+                .size(60.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Icon(Icon, "Localized description")
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = Title,
+            modifier = Modifier
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyLarge,
+        )
     }
 }
 
@@ -267,15 +456,33 @@ fun ServerOverview() {
 @Composable
 @ExperimentalMaterial3Api
 fun PreviewServerOverview() {
-    ServerOverview()
+    val overviewIconsList = listOf<OverviewItem>(
+        OverviewItem(Icons.Filled.Code, "Console", "console"),
+        OverviewItem(Icons.Filled.Description, "Files", "data"),
+        OverviewItem(Icons.Filled.Event, "Database", "plugins"),
+        OverviewItem(Icons.Filled.Info, "Schedules", "about"),
+        OverviewItem(Icons.Filled.Code, "BuckUps", "console"),
+        OverviewItem(Icons.Filled.DataObject, "Network", "data"),
+        OverviewItem(Icons.Filled.LastPage, "StartUp", "plugins"),
+        OverviewItem(Icons.Filled.Info, "Settings", "about"),
+        OverviewItem(Icons.Filled.Info, "Activity", "about"),
+    )
+    ServerOverview(overviewIconsList)
 }
 
 @Composable
 private fun ServerInfo() {
     Column(
         modifier = Modifier
-            .padding(horizontal = 18.dp)
+            .padding(horizontal = 18.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
+        Text(
+            text = "Server Info",
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Spacer(modifier = Modifier.height(10.dp))
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
