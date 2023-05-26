@@ -92,7 +92,7 @@ fun LoginScreen(
                             contentDescription = null
                         )
                     },
-                    shape = RoundedCornerShape(10.dp),
+                    shape = MaterialTheme.shapes.large,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -135,7 +135,7 @@ fun LoginScreen(
                     } else {
                         PasswordVisualTransformation()
                     },
-                    shape = RoundedCornerShape(10.dp),
+                    shape = MaterialTheme.shapes.large,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -152,6 +152,7 @@ fun LoginScreen(
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
+                    shape = MaterialTheme.shapes.large,
                     onClick = {
                         navController.navigate(SCAFFOLD_GRAPH_ROUTE) {
 //                            popUpTo(AUTH_GRAPH_ROUTE) {

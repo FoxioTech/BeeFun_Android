@@ -1,16 +1,17 @@
 package tech.foxio.beefun.ui.screens.account.screen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,7 +19,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.NavigateNext
-import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.Fullscreen
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -48,8 +51,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import tech.foxio.beefun.ui.components.HeadAppTopBarBack
 import tech.foxio.beefun.ui.screens.home.viewmodel.HomeViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+fun getCurrentDateTimeAsString(): String {
+    val currentDateTime = LocalDateTime.now()
+    val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    return currentDateTime.format(formatter)
+}
 
 @ExperimentalMaterial3Api
 @Composable
@@ -64,95 +77,105 @@ fun AccountScreen(
     val consoleInputState = remember { mutableStateOf(TextFieldValue()) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
+        //移除底部多余的Padding
+        contentWindowInsets = WindowInsets(0,0,0,0),
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = { HeadAppTopBarBack(Title = "Console Manage",scrollBehavior = scrollBehavior,navController = navController) },
-        content = { PaddingValues ->
+        topBar = {
+            HeadAppTopBarBack(
+                Title = "Console Manager",
+                scrollBehavior = scrollBehavior,
+                navController = navController
+            )
+        },
+        content = {
             LazyColumn(
                 modifier = Modifier
-                    .padding(PaddingValues)
+                    .padding(it)
                     .padding(horizontal = 18.dp)
             ) {
                 item {
-                    Box(
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Black
+                        ),
                         modifier = Modifier
                             .fillMaxWidth(),
+                        shape = MaterialTheme.shapes.extraLarge,
                     ) {
-                        Card(
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.Black
-                            ),
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp),
-                            shape = MaterialTheme.shapes.extraLarge,
+                                .padding(18.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Column(
+                            LazyColumn(
                                 modifier = Modifier
-                                    .padding(horizontal = 18.dp)
-                                    .padding(top = 18.dp, bottom = 35.dp)
-                            ) {
-                                LazyColumn(
-                                    state = consoleState,
-                                    content = {
-                                        items(100) {
-                                            Text(
-                                                text = "[20:23:50] [Worker-Main-9/INFO]: Preparing spawn area: 0%",
-                                                style = MaterialTheme.typography.labelSmall,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                color = Color.White
-                                            )
-                                        }
+                                    .height(250.dp)
+                                    .fillMaxWidth()
+                                    .padding(bottom = 18.dp),
+                                state = consoleState,
+                                content = {
+                                    items(100) {
+                                        Text(
+                                            text = "[${getCurrentDateTimeAsString()}] [Worker-Main-9/INFO]: Preparing spawn area: 0%",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            color = Color.White
+                                        )
                                     }
-                                )
-                            }
+                                }
+                            )
+                            TextField(
+                                label = {
+                                    Text(
+                                        text = "Console Input",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                singleLine = true,
+                                value = consoleInputState.value,
+                                onValueChange = {
+                                    consoleInputState.value = it
+                                },
+                                colors = TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent
+                                ),
+                                shape = MaterialTheme.shapes.large,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Fullscreen,
+                                        contentDescription = null
+                                    )
+                                },
+                                trailingIcon = {
+                                    Surface(
+                                        modifier = Modifier
+                                            .padding(end = 10.dp),
+                                        color = MaterialTheme.colorScheme.primary,
+                                        shape = MaterialTheme.shapes.medium,
+                                        onClick = { },
+                                        content = {
+                                            Row(
+                                                modifier = Modifier
+                                                    .padding(horizontal = 10.dp, vertical = 5.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Default.NavigateNext,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(24.dp)
+                                                )
+                                            }
+                                        }
+                                    )
+                                },
+                            )
                         }
-                        TextField(
-                            singleLine = true,
-                            value = consoleInputState.value,
-                            onValueChange = {
-                                consoleInputState.value = it
-                            },
-                            colors = TextFieldDefaults.colors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Code,
-                                    contentDescription = null
-                                )
-                            },
-                            trailingIcon = {
-                                Surface(
-                                    modifier = Modifier
-                                        .padding(end = 10.dp),
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = MaterialTheme.shapes.large,
-                                    onClick = { },
-                                    content = {
-                                        Row(
-                                            modifier = Modifier
-                                                .padding(horizontal = 10.dp, vertical = 5.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.NavigateNext,
-                                                contentDescription = null,
-                                                modifier = Modifier.size(24.dp)
-                                            )
-                                        }
-                                    }
-                                )
-                            },
-                            shape = MaterialTheme.shapes.extraLarge,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                            modifier = Modifier
-                                .width(300.dp)
-                                .padding(top = 225.dp)
-                                .align(Alignment.BottomCenter)
-                        )
                     }
                 }
                 item {
@@ -222,15 +245,13 @@ private fun CommandHistoryUI() {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = "Command History",
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(0.8f)
             )
             Surface(
                 tonalElevation = 3.dp,
@@ -239,18 +260,18 @@ private fun CommandHistoryUI() {
                 content = {
                     Row(
                         modifier = Modifier
-                            .padding(start = 5.dp)
-                            .height(30.dp),
+                            .padding(horizontal = 10.dp, vertical = 5.dp),
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
                             text = "View All",
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.bodyMedium
                         )
                         Icon(
-                            imageVector = Icons.Default.NavigateNext,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
+                            Icons.Filled.NavigateNext,
+                            contentDescription = "Favorite",
+                            modifier = Modifier.size(ButtonDefaults.IconSize)
                         )
                     }
                 }

@@ -64,15 +64,14 @@ fun AuthOptionsScreen(
                 }
                 Spacer(modifier = Modifier.weight(0.1f))
                 Text(
-                    text = "Welcome to Beefun",
-                    fontSize = 28.sp,
+                    text = "Create game servers quickly and stably",
+                    style = MaterialTheme.typography.displaySmall,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(18.dp),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge,
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.weight(0.1f))
                 Text(
                     text = "Welcome to Beefun",
                     fontSize = 18.sp,
@@ -85,6 +84,7 @@ fun AuthOptionsScreen(
                 )
                 Spacer(modifier = Modifier.weight(0.1f))
                 Button(
+                    shape = MaterialTheme.shapes.large,
                     onClick = {
                         navController.navigate(ScreenList.LoginScreen.Route)
                     },
@@ -101,20 +101,21 @@ fun AuthOptionsScreen(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 TextButton(
-                        onClick = {
-                            navController.navigate(ScreenList.RegisterScreen.Route)
-                        },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(start = 18.dp, end = 18.dp)
-                    .height(50.dp)
-                    .fillMaxWidth()
+                    shape = MaterialTheme.shapes.large,
+                    onClick = {
+                        navController.navigate(ScreenList.RegisterScreen.Route)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(start = 18.dp, end = 18.dp)
+                        .height(50.dp)
+                        .fillMaxWidth()
                 ) {
-                Text(
-                    text = "Sign Up",
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
+                    Text(
+                        text = "Sign Up",
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
                 Spacer(modifier = Modifier.weight(0.1f))
             }
         }

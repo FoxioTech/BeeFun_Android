@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -19,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -81,7 +86,6 @@ fun GuideScreen(
         ),
     )
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         content = {
             Column(
                 modifier = Modifier
@@ -117,17 +121,15 @@ fun GuideScreen(
                 Spacer(modifier = Modifier.weight(0.1f))
                 Text(
                     text = guideScreenList[pagerState.currentPage].title,
-                    fontSize = 28.sp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(18.dp),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.displaySmall,
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = guideScreenList[pagerState.currentPage].description,
-                    fontSize = 18.sp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(18.dp),
@@ -138,6 +140,7 @@ fun GuideScreen(
                 Spacer(modifier = Modifier.weight(0.1f))
                 val animationScope = rememberCoroutineScope()
                 Button(
+                    shape = MaterialTheme.shapes.large,
                     onClick = {
                         animationScope.launch {
                             if (pagerState.currentPage == 2) {
@@ -162,6 +165,8 @@ fun GuideScreen(
             }
             if (openBottomSheet) {
                 ModalBottomSheet(
+                    //ModalBottomSheet填充
+                    windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars),
                     onDismissRequest = { openBottomSheet = false },
                     sheetState = bottomSheetState,
                 ) {

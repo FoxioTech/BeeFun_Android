@@ -93,7 +93,7 @@ fun RegisterScreen(
                             contentDescription = null
                         )
                     },
-                    shape = RoundedCornerShape(10.dp),
+                    shape = MaterialTheme.shapes.large,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -115,7 +115,7 @@ fun RegisterScreen(
                             contentDescription = null
                         )
                     },
-                    shape = RoundedCornerShape(10.dp),
+                    shape = MaterialTheme.shapes.large,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -158,7 +158,7 @@ fun RegisterScreen(
                     } else {
                         PasswordVisualTransformation()
                     },
-                    shape = RoundedCornerShape(10.dp),
+                    shape = MaterialTheme.shapes.large,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -200,7 +200,7 @@ fun RegisterScreen(
                     } else {
                         PasswordVisualTransformation()
                     },
-                    shape = RoundedCornerShape(10.dp),
+                    shape = MaterialTheme.shapes.large,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -213,6 +213,7 @@ fun RegisterScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(
+                        shape = MaterialTheme.shapes.large,
                         onClick = {
                             navController.navigate(SCAFFOLD_GRAPH_ROUTE) {
                                 //                            popUpTo(AUTH_GRAPH_ROUTE) {

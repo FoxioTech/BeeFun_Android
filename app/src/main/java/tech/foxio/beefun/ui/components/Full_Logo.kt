@@ -41,7 +41,6 @@ fun Full_Logo() {
             style = MaterialTheme.typography.displaySmall,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
-            fontSize = 40.sp
         )
     }
 }
