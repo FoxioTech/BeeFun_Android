@@ -6,16 +6,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DataObject
@@ -28,13 +31,16 @@ import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -47,10 +53,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,6 +69,8 @@ data class OverviewItem(
     val Icon: ImageVector,
     val Title: String,
     val Route: String,
+    val BackgroundColor: Color,
+    val IconColor: Color,
 )
 
 @ExperimentalMaterial3Api
@@ -74,7 +80,19 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        //移除底部多余的Padding
+        contentWindowInsets = WindowInsets(0,0,0,0),
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {},
+                content = {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add"
+                    )
+                }
+            )
+        },
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
@@ -86,7 +104,7 @@ fun HomeScreen(
                     .padding(it)
                     .padding(horizontal = 18.dp),
             ) {
-                items(3) {
+                items(5) {
                     ServerItem()
                     Spacer(modifier = Modifier.height(10.dp))
                 }
@@ -94,7 +112,7 @@ fun HomeScreen(
                     ActivityLogListUI()
                     Spacer(modifier = Modifier.height(10.dp))
                 }
-                items(3) {
+                items(10) {
                     ActivityItem()
                     Spacer(modifier = Modifier.height(10.dp))
                 }
@@ -126,11 +144,11 @@ private fun ActivityItem() {
                 )
             },
             trailingContent = {
-                IconButton(
+                Surface(
                     onClick = { },
                     modifier = Modifier
-                        .size(30.dp)
-                        .padding(end = 5.dp)
+                        .size(30.dp),
+                    shape = MaterialTheme.shapes.extraLarge,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.MoreHoriz,
@@ -163,7 +181,6 @@ private fun ActivityLogListUI() {
             Text(
                 text = "Activity Log",
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(0.8f)
             )
             Surface(
                 tonalElevation = 3.dp,
@@ -172,18 +189,18 @@ private fun ActivityLogListUI() {
                 content = {
                     Row(
                         modifier = Modifier
-                            .padding(start = 5.dp)
-                            .height(30.dp),
+                            .padding(horizontal = 10.dp, vertical = 5.dp),
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
                             text = "View All",
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.bodyMedium
                         )
                         Icon(
-                            imageVector = Icons.Default.NavigateNext,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
+                            Icons.Filled.NavigateNext,
+                            contentDescription = "Favorite",
+                            modifier = Modifier.size(ButtonDefaults.IconSize)
                         )
                     }
                 }
@@ -233,7 +250,7 @@ fun ServerItem() {
     ) {
         ListItem(
             modifier = Modifier,
-            tonalElevation = 3.dp,
+            tonalElevation = 5.dp,
             headlineContent = {
                 Text(
                     maxLines = 1,
@@ -255,11 +272,12 @@ fun ServerItem() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End
                 ) {
-                    IconButton(
+                    Surface(
                         onClick = { openServerInfoSheet = !openServerInfoSheet },
                         modifier = Modifier
                             .size(30.dp)
-                            .padding(end = 5.dp)
+                            .padding(end = 5.dp),
+                        shape = MaterialTheme.shapes.extraLarge,
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Info,
@@ -309,25 +327,81 @@ fun ServerItem() {
     }
     if (openServerInfoSheet) {
         ModalBottomSheet(
+            windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars),
             onDismissRequest = { openServerInfoSheet = false },
             sheetState = serverInfoSheetState,
         ) {
             ServerInfo()
         }
     }
-    val overviewIconsList = listOf<OverviewItem>(
-        OverviewItem(Icons.Filled.Code, "Console", "console"),
-        OverviewItem(Icons.Filled.Description, "Files", "data"),
-        OverviewItem(Icons.Filled.Event, "Database", "plugins"),
-        OverviewItem(Icons.Filled.Info, "Schedules", "about"),
-        OverviewItem(Icons.Filled.Code, "BuckUps", "console"),
-        OverviewItem(Icons.Filled.DataObject, "Network", "data"),
-        OverviewItem(Icons.Filled.LastPage, "StartUp", "plugins"),
-        OverviewItem(Icons.Filled.Info, "Settings", "about"),
-        OverviewItem(Icons.Filled.Info, "Activity", "about"),
+    val overviewIconsList = listOf(
+        OverviewItem(
+            Icons.Filled.Code,
+            "Console",
+            "console",
+            Color(0xFFf6eadd),
+            Color(0xFFffc07a)
+        ),
+        OverviewItem(
+            Icons.Filled.Description,
+            "Files",
+            "data",
+            Color(0xFFffefeb),
+            Color(0xFFff6740)
+        ),
+        OverviewItem(
+            Icons.Filled.Event,
+            "Database",
+            "plugins",
+            Color(0xFFdff0d4),
+            Color(0xFF8ee04e)
+        ),
+        OverviewItem(
+            Icons.Filled.Info,
+            "Schedules",
+            "about",
+            Color(0xFFf6dcde),
+            Color(0xFFff7d7d)
+        ),
+        OverviewItem(
+            Icons.Filled.Code,
+            "BuckUps",
+            "console",
+            Color(0xFFc8dbf8),
+            Color(0xFF1c78ff)
+        ),
+        OverviewItem(
+            Icons.Filled.DataObject,
+            "Network",
+            "data",
+            Color(0xFFffefeb),
+            Color(0xFFff6740)
+        ),
+        OverviewItem(
+            Icons.Filled.LastPage,
+            "StartUp",
+            "plugins",
+            Color(0xFFdff0d4),
+            Color(0xFF8ee04e)
+        ),
+        OverviewItem(
+            Icons.Filled.Info,
+            "Settings",
+            "about",
+            Color(0xFFf6dcde),
+            Color(0xFFff7d7d)
+        ),
+        OverviewItem(
+            Icons.Filled.Info,
+            "Activity",
+            "about",
+            Color(0xFFc8dbf8),
+            Color(0xFF1c78ff)
+        ),
     )
     if (openServerOverviewSheet) {
         ModalBottomSheet(
+            windowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars),
             onDismissRequest = { openServerOverviewSheet = false },
             sheetState = serverOverviewSheetState,
         ) {
@@ -352,11 +426,7 @@ fun ServerOverview(overviewIconsList: List<OverviewItem>) {
             horizontalArrangement = Arrangement.Center,
         ) {
             items(overviewIconsList.size) {
-                ServerOverviewItem(
-                    overviewIconsList[it].Icon,
-                    overviewIconsList[it].Title,
-                    overviewIconsList[it].Route
-                )
+                ServerOverviewItem(overviewIconsList[it])
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -367,21 +437,22 @@ fun ServerOverview(overviewIconsList: List<OverviewItem>) {
             horizontalArrangement = Arrangement.Center
         ) {
             Button(
-                modifier = Modifier,
+                modifier = Modifier
+                    .weight(1f),
                 onClick = {
 
                 }
             ) {
                 Text(
                     text = "Start",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
             Button(
-                modifier = Modifier,
+                modifier = Modifier
+                    .weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary
                 ),
@@ -391,14 +462,14 @@ fun ServerOverview(overviewIconsList: List<OverviewItem>) {
             ) {
                 Text(
                     text = "Reboot",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
             Button(
-                modifier = Modifier,
+                modifier = Modifier
+                    .weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error
                 ),
@@ -408,8 +479,7 @@ fun ServerOverview(overviewIconsList: List<OverviewItem>) {
             ) {
                 Text(
                     text = "Stop",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium,
                     maxLines = 1,
                 )
             }
@@ -419,7 +489,7 @@ fun ServerOverview(overviewIconsList: List<OverviewItem>) {
 }
 
 @Composable
-private fun ServerOverviewItem(Icon: ImageVector, Title: String, Route: String) {
+private fun ServerOverviewItem(overviewItem: OverviewItem) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -431,6 +501,9 @@ private fun ServerOverviewItem(Icon: ImageVector, Title: String, Route: String) 
             modifier = Modifier
                 .size(60.dp),
             shape = MaterialTheme.shapes.extraLarge,
+            colors = CardDefaults.cardColors(
+                containerColor = overviewItem.BackgroundColor
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -438,12 +511,16 @@ private fun ServerOverviewItem(Icon: ImageVector, Title: String, Route: String) 
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                Icon(Icon, "Localized description")
+                Icon(
+                    imageVector = overviewItem.Icon,
+                    contentDescription = "Localized description",
+                    tint = overviewItem.IconColor
+                )
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = Title,
+            text = overviewItem.Title,
             modifier = Modifier
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,
@@ -456,16 +533,70 @@ private fun ServerOverviewItem(Icon: ImageVector, Title: String, Route: String) 
 @Composable
 @ExperimentalMaterial3Api
 fun PreviewServerOverview() {
-    val overviewIconsList = listOf<OverviewItem>(
-        OverviewItem(Icons.Filled.Code, "Console", "console"),
-        OverviewItem(Icons.Filled.Description, "Files", "data"),
-        OverviewItem(Icons.Filled.Event, "Database", "plugins"),
-        OverviewItem(Icons.Filled.Info, "Schedules", "about"),
-        OverviewItem(Icons.Filled.Code, "BuckUps", "console"),
-        OverviewItem(Icons.Filled.DataObject, "Network", "data"),
-        OverviewItem(Icons.Filled.LastPage, "StartUp", "plugins"),
-        OverviewItem(Icons.Filled.Info, "Settings", "about"),
-        OverviewItem(Icons.Filled.Info, "Activity", "about"),
+    val overviewIconsList = listOf(
+        OverviewItem(
+            Icons.Filled.Code,
+            "Console",
+            "console",
+            Color(0xFFf6eadd),
+            Color(0xFFffc07a)
+        ),
+        OverviewItem(
+            Icons.Filled.Description,
+            "Files",
+            "data",
+            Color(0xFFffefeb),
+            Color(0xFFff6740)
+        ),
+        OverviewItem(
+            Icons.Filled.Event,
+            "Database",
+            "plugins",
+            Color(0xFFdff0d4),
+            Color(0xFF8ee04e)
+        ),
+        OverviewItem(
+            Icons.Filled.Info,
+            "Schedules",
+            "about",
+            Color(0xFFf6dcde),
+            Color(0xFFff7d7d)
+        ),
+        OverviewItem(
+            Icons.Filled.Code,
+            "BuckUps",
+            "console",
+            Color(0xFFc8dbf8),
+            Color(0xFF1c78ff)
+        ),
+        OverviewItem(
+            Icons.Filled.DataObject,
+            "Network",
+            "data",
+            Color(0xFFffefeb),
+            Color(0xFFff6740)
+        ),
+        OverviewItem(
+            Icons.Filled.LastPage,
+            "StartUp",
+            "plugins",
+            Color(0xFFdff0d4),
+            Color(0xFF8ee04e)
+        ),
+        OverviewItem(
+            Icons.Filled.Info,
+            "Settings",
+            "about",
+            Color(0xFFf6dcde),
+            Color(0xFFff7d7d)
+        ),
+        OverviewItem(
+            Icons.Filled.Info,
+            "Activity",
+            "about",
+            Color(0xFFc8dbf8),
+            Color(0xFF1c78ff)
+        ),
     )
     ServerOverview(overviewIconsList)
 }
@@ -480,7 +611,7 @@ private fun ServerInfo() {
     ) {
         Text(
             text = "Server Info",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.displaySmall,
         )
         Spacer(modifier = Modifier.height(10.dp))
         Card(
