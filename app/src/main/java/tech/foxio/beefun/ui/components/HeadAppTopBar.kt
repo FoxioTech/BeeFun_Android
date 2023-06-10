@@ -38,7 +38,7 @@ import tech.foxio.beefun.R
  *  description :
  */
 @Composable
-public fun HeadAppTopBar(Title : String) {
+public fun HeadAppTopBar(title : String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,7 +52,7 @@ public fun HeadAppTopBar(Title : String) {
                 .size(30.dp)
         )
         Text(
-            text = Title,
+            text = title,
             style = MaterialTheme.typography.headlineLarge,
         )
         Spacer(modifier = Modifier.height(5.dp))
@@ -71,7 +71,7 @@ public fun HeadAppTopBar(Title : String) {
 @Preview
 @Composable
 public fun HeadAppTopBarPreview() {
-    HeadAppTopBar(Title = "Title")
+    HeadAppTopBar(title = "Title")
 }
 
 @Composable
@@ -112,6 +112,9 @@ fun HeadAppTopBarBack(
     navController: NavController
 ) {
     LargeTopAppBar(
+        colors = TopAppBarDefaults.largeTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background
+        ),
         title = {
             Column {
                 Text(

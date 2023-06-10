@@ -35,7 +35,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -66,11 +65,11 @@ import tech.foxio.beefun.ui.components.HeadAppTopBar
 import tech.foxio.beefun.ui.screens.home.viewmodel.HomeViewModel
 
 data class OverviewItem(
-    val Icon: ImageVector,
-    val Title: String,
-    val Route: String,
-    val BackgroundColor: Color,
-    val IconColor: Color,
+    val icon: ImageVector,
+    val title: String,
+    val route: String,
+    val backgroundColor: Color,
+    val iconColor: Color,
 )
 
 @ExperimentalMaterial3Api
@@ -96,7 +95,7 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
-            HeadAppTopBar(Title = "Good Morning\nCjiio")
+            HeadAppTopBar(title = "Good Morning\nCjiio")
         },
         content = {
             LazyColumn(
@@ -502,7 +501,7 @@ private fun ServerOverviewItem(overviewItem: OverviewItem) {
                 .size(60.dp),
             shape = MaterialTheme.shapes.extraLarge,
             colors = CardDefaults.cardColors(
-                containerColor = overviewItem.BackgroundColor
+                containerColor = overviewItem.backgroundColor
             )
         ) {
             Column(
@@ -512,15 +511,15 @@ private fun ServerOverviewItem(overviewItem: OverviewItem) {
                 verticalArrangement = Arrangement.Center,
             ) {
                 Icon(
-                    imageVector = overviewItem.Icon,
+                    imageVector = overviewItem.icon,
                     contentDescription = "Localized description",
-                    tint = overviewItem.IconColor
+                    tint = overviewItem.iconColor
                 )
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = overviewItem.Title,
+            text = overviewItem.title,
             modifier = Modifier
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,
